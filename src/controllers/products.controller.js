@@ -33,7 +33,7 @@ export async function getProductCtrl(req, res, next) {
 // Controller untuk Manual (dengan upload file)
 export async function createProductManualCtrl(req, res, next) {
     try {
-        const { product_name, product_price, product_link } = req.body ?? {};
+        const { product_name, product_price, product_link, product_category } = req.body ?? {};
 
         // Validasi file upload
         if (!req.file) {
@@ -47,10 +47,11 @@ export async function createProductManualCtrl(req, res, next) {
         if (
             !ensureString(product_name) ||
             !ensureString(product_price) ||
-            !ensureString(product_link)
+            !ensureString(product_link)  ||
+            !ensureString(product_category)
         ) {
             return res.status(400).json({
-                message: 'All fields are required: product_name, product_price, product_link'
+                message: 'All fields are required: product_name, product_price, product_link, product_category'
             });
         }
 
@@ -58,7 +59,8 @@ export async function createProductManualCtrl(req, res, next) {
             product_name,
             product_price,
             product_photo,
-            product_link
+            product_link,
+            product_category
         });
 
         res.status(201).json(created);
@@ -70,17 +72,18 @@ export async function createProductManualCtrl(req, res, next) {
 // Controller untuk TikTok (dengan URL foto)
 export async function createProductTikTokCtrl(req, res, next) {
     try {
-        const { product_name, product_price, product_photo, product_link } = req.body ?? {};
+        const { product_name, product_price, product_photo, product_link, product_category } = req.body ?? {};
 
         // Validasi semua field
         if (
             !ensureString(product_name) ||
             !ensureString(product_price) ||
             !ensureString(product_photo) ||
-            !ensureString(product_link)
+            !ensureString(product_link) ||
+            !ensureString(product_category)
         ) {
             return res.status(400).json({
-                message: 'All fields are required: product_name, product_price, product_photo, product_link'
+                message: 'All fields are required: product_name, product_price, product_photo, product_link, product_category'
             });
         }
 
@@ -88,7 +91,8 @@ export async function createProductTikTokCtrl(req, res, next) {
             product_name,
             product_price,
             product_photo,
-            product_link
+            product_link,
+            product_category
         });
 
         res.status(201).json(created);
@@ -103,7 +107,7 @@ export async function updateProductCtrl(req, res, next) {
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: 'Invalid id' });
 
-    const allowed = ['product_name', 'product_price', 'product_photo', 'product_link'];
+    const allowed = ['product_name', 'product_price', 'product_photo', 'product_link', 'product_category'];
     const patch = {};
     for (const k of allowed) {
       if (k in (req.body ?? {}) && ensureString(req.body[k])) patch[k] = req.body[k];

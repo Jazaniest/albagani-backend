@@ -36,11 +36,11 @@ export async function getProductById(id) {
 }
 
 /** Insert product baru */
-export async function createProduct({ product_name, product_price, product_photo, product_link }) {
+export async function createProduct({ product_name, product_price, product_photo, product_link, product_category }) {
   const [res] = await pool.query(
-    `INSERT INTO products (product_name, product_price, product_photo, product_link)
+    `INSERT INTO products (product_name, product_price, product_photo, product_link, product_category)
      VALUES (?, ?, ?, ?)`,
-    [product_name, product_price, product_photo, product_link]
+    [product_name, product_price, product_photo, product_link, product_category]
   );
   return await getProductById(res.insertId);
 }
