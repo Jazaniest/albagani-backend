@@ -6,6 +6,7 @@ import {
   deleteProduct
 } from '../repos/products.repo.js';
 import { getFromHTML, getFromURLParams, resolveRedirects } from '../utils/productFinder.js';
+import { deleteProductService } from '../utils/productService.js';
 
 function ensureString(v) {
   return typeof v === 'string' && v.trim().length > 0;
@@ -127,9 +128,18 @@ export async function deleteProductCtrl(req, res, next) {
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: 'Invalid id' });
 
-    const ok = await deleteProduct(id);
-    if (!ok) return res.status(404).json({ message: 'Product not found' });
-    res.json({ deleted: true });
+    const result = await deleteProductService(id);
+    if (!result.ok) {
+      if (result.reason === 'not_found') return res.status(404).json({ message: 'Product not found' });
+      return res.status(500).json({ message: 'Failed to delete product', detail: result });
+    }
+
+    return res.json({
+      deleted: true,
+      fileDeleted: result.fileDeleted || false,
+      note: result.note || null,
+      error: result.error || null
+    });
   } catch (e) { next(e); }
 }
 

@@ -2,8 +2,8 @@ import { Router } from 'express';
 import {
     listProductsCtrl,
     getProductCtrl,
-    createProductManualCtrl,  // ← Baru
-    createProductTikTokCtrl,  // ← Baru
+    createProductManualCtrl,
+    createProductTikTokCtrl,
     updateProductCtrl,
     deleteProductCtrl,
     findProductCtrl,
